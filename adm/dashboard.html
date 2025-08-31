@@ -3,34 +3,52 @@
 <head>
   <meta charset="UTF-8">
   <title>Dashboard ADM</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <link rel="stylesheet" href="estilos.css">
 </head>
 <body>
-  <header>
+  <header class="dashboard-header">
     <h1>Dashboard Administrador</h1>
     <button id="btn-logout">Sair</button>
   </header>
 
-  <section>
-    <h2>Agendamentos</h2>
-    <table id="tabela-agendamentos" border="1">
-      <thead>
-        <tr>
-          <th>ID</th>
-          <th>Nome</th>
-          <th>Telefone</th>
-          <th>Corte</th>
-          <th>Data</th>
-          <th>Hora</th>
-          <th>Concluído</th>
-        </tr>
-      </thead>
-      <tbody>
-        <!-- Agendamentos vão aparecer aqui -->
-      </tbody>
-    </table>
-  </section>
+  <main class="dashboard-main">
+    <section class="resumo">
+      <div class="card">
+        <h3>Total Agendamentos</h3>
+        <p id="total-agendamentos">0</p>
+      </div>
+      <div class="card">
+        <h3>Concluídos</h3>
+        <p id="agendamentos-concluidos">0</p>
+      </div>
+      <div class="card">
+        <h3>Pendentes</h3>
+        <p id="agendamentos-pendentes">0</p>
+      </div>
+    </section>
 
+    <section class="agendamentos">
+      <h2>Agendamentos</h2>
+      <div class="table-container">
+        <table id="tabela-agendamentos">
+          <thead>
+            <tr>
+              <th>ID</th>
+              <th>Nome</th>
+              <th>Telefone</th>
+              <th>Corte</th>
+              <th>Data</th>
+              <th>Hora</th>
+              <th>Concluído</th>
+              <th>Ações</th>
+            </tr>
+          </thead>
+          <tbody></tbody>
+        </table>
+      </div>
+    </section>
+  </main>
   <script src="script.js"></script>
 </body>
 </html>

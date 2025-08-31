@@ -6,13 +6,12 @@ const app = express();
 
 // Middleware
 app.use(express.json());
-app.use(express.static("public"));              // site do cliente
-app.use("/barbeiro", express.static("barbeiro")); // dashboard do barbeiro
-app.use("/adm", express.static("adm"));         // dashboard ADM
+app.use(express.static("public"));
+app.use("/adm", express.static("adm"));
 
 // Banco de dados
 const db = await open({
-  filename: "./database.sqlite",
+  filename: "database.sqlite",
   driver: sqlite3.Database
 });
 
@@ -49,21 +48,10 @@ app.post("/api/agendar", async (req, res) => {
   }
 });
 
-// Rota para listar agendamentos (barbeiro ou ADM)
+// Rota para listar agendamentos (ADM)
 app.get("/api/agendamentos", async (req, res) => {
   try {
-    const { data } = req.query;
-    let query = "SELECT * FROM agendamentos";
-    const params = [];
-
-    if(data){
-      query += " WHERE data = ?";
-      params.push(data);
-    }
-
-    query += " ORDER BY data, hora";
-    const rows = await db.all(query, params);
-
+    const rows = await db.all("SELECT * FROM agendamentos ORDER BY data, hora");
     res.json(rows);
   } catch(err){
     console.error(err);
@@ -71,7 +59,7 @@ app.get("/api/agendamentos", async (req, res) => {
   }
 });
 
-// Rota para atualizar agendamento (concluído ou editar dados)
+// Rota para atualizar agendamento
 app.put("/api/agendamento/:id", async (req, res) => {
   try {
     const { id } = req.params;
@@ -115,5 +103,5 @@ app.delete("/api/agendamento/:id", async (req, res) => {
 });
 
 // Servidor
-const PORT = process.env.PORT || 3000; // Render usa porta dinâmica
+const PORT = process.env.PORT || 3000;
 app.listen(PORT, () => console.log(`Servidor rodando em http://localhost:${PORT}`));
