@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <title>Dashboard Barbearia 💈</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="stylesheet" href="estilos.css">
+</head>
+<body>
+  <header>
+    <h1>💈 Dashboard do Barbeiro</h1>
+    <button id="btn-logout">Sair</button>
+  </header>
+
+  <section class="dashboard">
+    <h2>📅 Agendamentos</h2>
+
+    <!-- Filtro por data -->
+    <div class="filtro">
+      <label>Filtrar por data:</label>
+      <input type="date" id="filtro-data">
+      <button id="btn-filtrar">Filtrar</button>
+      <button id="btn-limpar">Limpar</button>
+    </div>
+
+    <table>
+      <thead>
+        <tr>
+          <th>Nome</th>
+          <th>Telefone</th>
+          <th>Corte</th>
+          <th>Data</th>
+          <th>Hora</th>
+          <th>Concluído</th>
+          <th>Ações</th>
+        </tr>
+      </thead>
+      <tbody id="tabela-agendamentos">
+        <!-- Agendamentos vão aparecer aqui -->
+      </tbody>
+    </table>
+  </section>
+
+  <script src="script.js"></script>
+</body>
+</html>

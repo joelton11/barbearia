@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <title>Barbearia Los Hermanos 💈</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="stylesheet" href="estilos.css">
+</head>
+<body>
+  <!-- Cabeçalho -->
+  <header>
+    <div class="logo">
+      <h1>💈 Los Hermanos</h1>
+      <p>Estilo e tradição em cada corte</p>
+    </div>
+    <nav>
+      <a href="#catalogo">Catálogo</a>
+      <a href="#formulario">Agendamento</a>
+    </nav>
+  </header>
+
+  <!-- Hero -->
+  <section class="hero">
+    <h2>Transforme seu visual</h2>
+    <p>Escolha seu corte preferido e agende em segundos!</p>
+    <a href="#formulario" class="btn">Agendar Agora</a>
+  </section>
+
+  <!-- Catálogo -->
+  <section id="catalogo" class="catalogo">
+    <h2>✂️ Nossos Cortes</h2>
+    <div class="cards">
+      <div class="card">
+        <img src="https://images.unsplash.com/photo-1603052875602-2c2adf8a734d?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=MnwxMjA3fDB8MHxzZWFyY2h8Mnx8ZGVncmFkw6V8ZWQlMjBjYXNodWxvJTIwY2Fwa3xlbnwwfHwwfHw%3D&ixlib=rb-4.0.3&q=80&w=400" alt="Degradê">
+        <h3>Degradê</h3>
+        <p>O clássico que nunca sai de moda.</p>
+      </div>
+      <div class="card">
+        <img src="https://images.unsplash.com/photo-1618205079045-f2c4dfc79c95?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=MnwxMjA3fDB8MHxzZWFyY2h8Mnx8bmF2YWxow6FkbyUyMGNocm9tZXxlbnwwfHwwfHw%3D&ixlib=rb-4.0.3&q=80&w=400" alt="Navalhado">
+        <h3>Navalhado</h3>
+        <p>Moderno, estiloso e marcante.</p>
+      </div>
+      <div class="card">
+        <img src="https://images.unsplash.com/photo-1614315035341-4b2479a6df1e?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=MnwxMjA3fDB8MHxzZWFyY2h8Mnx8Y29tcGxldG8lMjBzb2NpYWwlMjBjYXNodWxvfGVufDB8fDB8fA%3D%3D&ixlib=rb-4.0.3&q=80&w=400" alt="Social">
+        <h3>Social</h3>
+        <p>Perfeito para qualquer ocasião.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- Formulário -->
+  <section id="formulario" class="formulario">
+    <h2>📅 Agende seu Corte</h2>
+    <form id="form-agendamento">
+      <label>Nome:</label>
+      <input type="text" name="nome" placeholder="Seu nome" required>
+
+      <label>Telefone:</label>
+      <input type="text" name="telefone" placeholder="(XX) XXXXX-XXXX" required>
+
+      <label>Escolha o corte:</label>
+      <select name="corte">
+        <option value="Degradê">Degradê</option>
+        <option value="Navalhado">Navalhado</option>
+        <option value="Social">Social</option>
+      </select>
+
+      <label>Data:</label>
+      <input type="date" name="data" required>
+
+      <label>Hora:</label>
+      <input type="time" name="hora" required>
+
+      <button type="submit">Agendar</button>
+    </form>
+  </section>
+
+  <!-- Rodapé -->
+  <footer>
+    <p>© 2025 Barbearia Los Hermanos - Todos os direitos reservados</p>
+  </footer>
+
+  <script src="script.js"></script>
+</body>
+</html>
