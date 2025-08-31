@@ -6,12 +6,13 @@ const app = express();
 
 // Middleware
 app.use(express.json());
-app.use(express.static("public"));           // site do cliente
+app.use(express.static("public"));              // site do cliente
 app.use("/barbeiro", express.static("barbeiro")); // dashboard do barbeiro
+app.use("/adm", express.static("adm"));         // dashboard ADM
 
 // Banco de dados
 const db = await open({
-  filename: "database.sqlite",
+  filename: "./database.sqlite",
   driver: sqlite3.Database
 });
 
@@ -48,7 +49,7 @@ app.post("/api/agendar", async (req, res) => {
   }
 });
 
-// Rota para listar agendamentos (barbeiro)
+// Rota para listar agendamentos (barbeiro ou ADM)
 app.get("/api/agendamentos", async (req, res) => {
   try {
     const { data } = req.query;
@@ -114,5 +115,5 @@ app.delete("/api/agendamento/:id", async (req, res) => {
 });
 
 // Servidor
-const PORT = 3000;
+const PORT = process.env.PORT || 3000; // Render usa porta dinâmica
 app.listen(PORT, () => console.log(`Servidor rodando em http://localhost:${PORT}`));
