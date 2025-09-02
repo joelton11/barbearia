@@ -47,16 +47,19 @@ async function carregarAgendamentos() {
     const agendamentos = await res.json();
 
     const tbodyPendentes = document.querySelector("#tabela-pendentes tbody");
-    const tbodyConcluidos = document.querySelector("#tabela-concluidos tbody");
+    const tbodyConcluidos = document.querySelector("#tabela-concluidos tbody"); // pode não existir
+    const concluidosList = document.getElementById("concluidos-list");
 
-    tbodyPendentes.innerHTML = "";
-    tbodyConcluidos.innerHTML = "";
+    if (tbodyPendentes) tbodyPendentes.innerHTML = "";
+    if (tbodyConcluidos) tbodyConcluidos.innerHTML = ""; // safe se existir
 
     let total = 0, concluidos = 0, pendentes = 0;
+    const idsConcluidos = [];
 
     agendamentos.forEach(a => {
       total++;
 
+      // Cria a linha da tabela (usamos sempre a estrutura; só inserimos em Pendentes)
       const tr = document.createElement("tr");
       tr.innerHTML = `
         <td>${a.id}</td>
@@ -73,11 +76,13 @@ async function carregarAgendamentos() {
       `;
 
       if (a.concluido) {
-        tbodyConcluidos.appendChild(tr);
         concluidos++;
+        idsConcluidos.push(a.id);
+        // Se houver uma tabela de concluídos no HTML, também joga lá (opcional)
+        if (tbodyConcluidos) tbodyConcluidos.appendChild(tr);
       } else {
-        tbodyPendentes.appendChild(tr);
         pendentes++;
+        if (tbodyPendentes) tbodyPendentes.appendChild(tr);
       }
 
       // ============================
@@ -109,10 +114,37 @@ async function carregarAgendamentos() {
       btnExcluir.addEventListener("click", () => excluirAgendamento(a.id));
     });
 
-    // Atualizar cards
-    document.getElementById("total-agendamentos").textContent = total;
-    document.getElementById("agendamentos-concluidos").textContent = concluidos;
-    document.getElementById("agendamentos-pendentes").textContent = pendentes;
+    // Atualizar cards de números
+    const elTotal = document.getElementById("total-agendamentos");
+    const elConcl = document.getElementById("agendamentos-concluidos");
+    const elPend = document.getElementById("agendamentos-pendentes");
+    if (elTotal) elTotal.textContent = total;
+    if (elConcl) elConcl.textContent = concluidos;
+    if (elPend) elPend.textContent = pendentes;
+
+    // Atualizar lista de IDs concluídos dentro do card
+    if (concluidosList) {
+      if (idsConcluidos.length === 0) {
+        concluidosList.innerHTML = `<span class="placeholder">Nenhum</span>`;
+      } else {
+        concluidosList.innerHTML = idsConcluidos
+          .map(id => `<span class="chip" data-id="${id}">${id}</span>`)
+          .join("");
+      }
+    }
+
+    // Clique em chip para reabrir
+    if (concluidosList && !concluidosList.dataset.bound) {
+      concluidosList.addEventListener("click", (e) => {
+        const chip = e.target.closest(".chip");
+        if (!chip) return;
+        const id = Number(chip.dataset.id);
+        if (Number.isFinite(id) && confirm(`Reabrir agendamento #${id}?`)) {
+          atualizarConcluido(id, false);
+        }
+      });
+      concluidosList.dataset.bound = "1";
+    }
 
   } catch (err) {
     console.error("Erro ao carregar agendamentos:", err);
