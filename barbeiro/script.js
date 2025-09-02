@@ -4,7 +4,7 @@ document.getElementById("form-login")?.addEventListener("submit", (e) => {
   const usuario = e.target.usuario.value;
   const senha = e.target.senha.value;
 
-  if(usuario === "admin" && senha === "1234"){
+  if(usuario === "Samuel" && senha === "07112002"){
     localStorage.setItem("logado", "true");
     window.location.href = "dashboard.html";
   } else {

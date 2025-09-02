@@ -1,8 +1,8 @@
 // ============================
 // Verificar login ADM
 // ============================
-if(window.location.pathname.includes("dashboard.html")){
-  if(localStorage.getItem("admLogado") !== "true"){
+if (window.location.pathname.includes("dashboard.html")) {
+  if (localStorage.getItem("admLogado") !== "true") {
     alert("Você precisa estar logado como administrador!");
     window.location.href = "login.html";
   }
@@ -12,7 +12,7 @@ if(window.location.pathname.includes("dashboard.html")){
 // Logout
 // ============================
 const btnLogout = document.getElementById("btn-logout");
-if(btnLogout){
+if (btnLogout) {
   btnLogout.addEventListener("click", () => {
     localStorage.removeItem("admLogado");
     window.location.href = "login.html";
@@ -23,13 +23,13 @@ if(btnLogout){
 // Login
 // ============================
 const form = document.getElementById("form-login");
-if(form){
+if (form) {
   form.addEventListener("submit", (e) => {
     e.preventDefault();
     const usuario = e.target.usuario.value;
     const senha = e.target.senha.value;
 
-    if(usuario === "adm" && senha === "senha123"){
+    if (usuario === "adm" && senha === "senha123") {
       localStorage.setItem("admLogado", "true");
       window.location.href = "dashboard.html";
     } else {
@@ -41,7 +41,7 @@ if(form){
 // ============================
 // Carregar agendamentos
 // ============================
-async function carregarAgendamentos(){
+async function carregarAgendamentos() {
   try {
     const res = await fetch("/api/agendamentos");
     const agendamentos = await res.json();
@@ -53,7 +53,7 @@ async function carregarAgendamentos(){
 
     agendamentos.forEach(a => {
       total++;
-      if(a.concluido) concluidos++; else pendentes++;
+      if (a.concluido) concluidos++; else pendentes++;
 
       const tr = document.createElement("tr");
       tr.innerHTML = `
@@ -73,14 +73,30 @@ async function carregarAgendamentos(){
       tbody.appendChild(tr);
 
       // ============================
-      // Ações dos botões
+      // Botão concluir/reabrir
       // ============================
       const btnConcluir = tr.querySelector(".btn-concluir");
-      btnConcluir.addEventListener("click", () => atualizarConcluido(a.id, !a.concluido));
+      btnConcluir.addEventListener("click", () => {
+        if (a.concluido) {
+          if (confirm("Deseja reabrir este agendamento?")) {
+            atualizarConcluido(a.id, false);
+          }
+        } else {
+          if (confirm("Deseja marcar este agendamento como concluído?")) {
+            atualizarConcluido(a.id, true);
+          }
+        }
+      });
 
+      // ============================
+      // Botão editar
+      // ============================
       const btnEditar = tr.querySelector(".btn-editar");
       btnEditar.addEventListener("click", () => editarAgendamento(a));
 
+      // ============================
+      // Botão excluir
+      // ============================
       const btnExcluir = tr.querySelector(".btn-excluir");
       btnExcluir.addEventListener("click", () => excluirAgendamento(a.id));
     });
@@ -90,7 +106,7 @@ async function carregarAgendamentos(){
     document.getElementById("agendamentos-concluidos").textContent = concluidos;
     document.getElementById("agendamentos-pendentes").textContent = pendentes;
 
-  } catch(err){
+  } catch (err) {
     console.error("Erro ao carregar agendamentos:", err);
   }
 }
@@ -98,7 +114,7 @@ async function carregarAgendamentos(){
 // ============================
 // Atualizar concluído
 // ============================
-async function atualizarConcluido(id, valor){
+async function atualizarConcluido(id, valor) {
   try {
     await fetch(`/api/agendamento/${id}`, {
       method: "PUT",
@@ -106,7 +122,7 @@ async function atualizarConcluido(id, valor){
       body: JSON.stringify({ concluido: valor })
     });
     carregarAgendamentos();
-  } catch(err){
+  } catch (err) {
     console.error(err);
   }
 }
@@ -114,12 +130,12 @@ async function atualizarConcluido(id, valor){
 // ============================
 // Excluir agendamento
 // ============================
-async function excluirAgendamento(id){
-  if(confirm("Deseja realmente excluir este agendamento?")){
+async function excluirAgendamento(id) {
+  if (confirm("Deseja realmente excluir este agendamento?")) {
     try {
       await fetch(`/api/agendamento/${id}`, { method: "DELETE" });
       carregarAgendamentos();
-    } catch(err){
+    } catch (err) {
       console.error(err);
     }
   }
@@ -128,7 +144,7 @@ async function excluirAgendamento(id){
 // ============================
 // Editar agendamento
 // ============================
-function editarAgendamento(ag){
+function editarAgendamento(ag) {
   const novoNome = prompt("Nome:", ag.nome) || ag.nome;
   const novoTelefone = prompt("Telefone:", ag.telefone) || ag.telefone;
   const novoCorte = prompt("Corte:", ag.corte) || ag.corte;
@@ -151,6 +167,6 @@ function editarAgendamento(ag){
 // ============================
 // Inicializar
 // ============================
-if(window.location.pathname.includes("dashboard.html")){
+if (window.location.pathname.includes("dashboard.html")) {
   carregarAgendamentos();
 }
