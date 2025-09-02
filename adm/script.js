@@ -46,14 +46,16 @@ async function carregarAgendamentos() {
     const res = await fetch("/api/agendamentos");
     const agendamentos = await res.json();
 
-    const tbody = document.querySelector("#tabela-agendamentos tbody");
-    tbody.innerHTML = "";
+    const tbodyPendentes = document.querySelector("#tabela-pendentes tbody");
+    const tbodyConcluidos = document.querySelector("#tabela-concluidos tbody");
+
+    tbodyPendentes.innerHTML = "";
+    tbodyConcluidos.innerHTML = "";
 
     let total = 0, concluidos = 0, pendentes = 0;
 
     agendamentos.forEach(a => {
       total++;
-      if (a.concluido) concluidos++; else pendentes++;
 
       const tr = document.createElement("tr");
       tr.innerHTML = `
@@ -63,14 +65,20 @@ async function carregarAgendamentos() {
         <td>${a.corte}</td>
         <td>${a.data}</td>
         <td>${a.hora}</td>
-        <td>${a.concluido ? "Sim" : "Não"}</td>
         <td>
           <button class="btn-acao btn-concluir">${a.concluido ? "Reabrir" : "Concluir"}</button>
           <button class="btn-acao btn-editar">Editar</button>
           <button class="btn-acao btn-excluir">Excluir</button>
         </td>
       `;
-      tbody.appendChild(tr);
+
+      if (a.concluido) {
+        tbodyConcluidos.appendChild(tr);
+        concluidos++;
+      } else {
+        tbodyPendentes.appendChild(tr);
+        pendentes++;
+      }
 
       // ============================
       // Botão concluir/reabrir
