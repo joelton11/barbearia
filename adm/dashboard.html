@@ -7,12 +7,15 @@
   <link rel="stylesheet" href="estilos.css">
 </head>
 <body>
+  <!-- Header com botão de logout -->
   <header class="dashboard-header">
     <h1>Dashboard Administrador</h1>
-    <button id="btn-logout">Sair</button>
+    <button id="btn-logout" class="btn-logout">Sair</button>
   </header>
 
+  <!-- Conteúdo principal -->
   <main class="dashboard-main">
+    
     <!-- Cards de resumo -->
     <section class="resumo">
       <div class="card">
@@ -23,8 +26,11 @@
       <div class="card">
         <h3>Concluídos</h3>
         <p id="agendamentos-concluidos">0</p>
-        <!-- Lista compacta de IDs concluídos -->
-        <div id="concluidos-list" class="concluidos-list" aria-live="polite" title="IDs concluídos (clique para reabrir)">
+        <div 
+          id="concluidos-list" 
+          class="concluidos-list" 
+          aria-live="polite" 
+          title="IDs concluídos (clique para reabrir)">
           <span class="placeholder">Nenhum</span>
         </div>
       </div>
@@ -35,7 +41,7 @@
       </div>
     </section>
 
-    <!-- Agendamentos pendentes -->
+    <!-- Tabela de agendamentos pendentes -->
     <section class="agendamentos">
       <h2>Agendamentos Pendentes</h2>
       <div class="table-container">
@@ -51,12 +57,39 @@
               <th>Ações</th>
             </tr>
           </thead>
-          <tbody></tbody>
+          <tbody>
+            <!-- Conteúdo preenchido via JavaScript -->
+          </tbody>
         </table>
       </div>
     </section>
+
+    <!-- Tabela opcional de concluídos (se desejar) -->
+    <section class="agendamentos" id="secao-concluidos" style="display: none;">
+      <h2>Agendamentos Concluídos</h2>
+      <div class="table-container">
+        <table id="tabela-concluidos" aria-label="Tabela de agendamentos concluídos">
+          <thead>
+            <tr>
+              <th>ID</th>
+              <th>Nome</th>
+              <th>Telefone</th>
+              <th>Corte</th>
+              <th>Data</th>
+              <th>Hora</th>
+              <th>Ações</th>
+            </tr>
+          </thead>
+          <tbody>
+            <!-- Preenchido via JS -->
+          </tbody>
+        </table>
+      </div>
+    </section>
+
   </main>
 
-  <script src="script.js"></script>
+  <!-- Script principal -->
+  <script src="script.js" defer></script>
 </body>
 </html>

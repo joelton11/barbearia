@@ -2,22 +2,41 @@
 <html lang="pt-BR">
 <head>
   <meta charset="UTF-8">
-  <title>Painel ADM - Login</title>
+  <title>ADM</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <link rel="stylesheet" href="estilos.css">
+  <link href='https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css' rel='stylesheet'>
 </head>
 <body>
-  <div class="login-panel">
-    <div class="login-header">
-      <h1>Administrador</h1>
-      <p>Faça login para acessar o painel</p>
-    </div>
-    <form id="form-login" class="login-form">
-      <input type="text" name="usuario" placeholder="Usuário" required>
-      <input type="password" name="senha" placeholder="Senha" required>
-      <button type="submit">Entrar</button>
+  <main class="container">
+    <form action="#" method="POST"> <!-- Adicione o action real se tiver backend -->
+      <h1>Login</h1>
+
+      <div class="input-box">
+        <label for="usuario" class="visually-hidden">Usuário</label>
+        <input id="usuario" name="usuario" placeholder="Usuário" type="text" required>
+        <i class="bx bxs-user"></i>
+      </div>
+
+      <div class="input-box">
+        <label for="senha" class="visually-hidden">Senha</label>
+        <input id="senha" name="senha" placeholder="Senha" type="password" required>
+        <i class="bx bxs-lock-alt"></i>
+      </div>
+
+      <div class="remember-forgot">
+        <label>
+          <input type="checkbox" name="lembrar"> Lembrar senha
+        </label>
+        <a href="#">Esqueci a senha?</a>
+      </div>
+
+      <button type="submit" class="login">Login</button>
+
+      <div class="register-link">
+        <p>Não tem uma conta? <a href="#">Cadastre-se</a></p>
+      </div>
     </form>
-  </div>
-  <script src="script.js"></script>
+  </main>
 </body>
 </html>

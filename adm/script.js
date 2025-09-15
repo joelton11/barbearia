@@ -2,7 +2,8 @@
 // Verificar login ADM
 // ============================
 if (window.location.pathname.includes("dashboard.html")) {
-  if (localStorage.getItem("admLogado") !== "true") {
+  const admLogado = localStorage.getItem("admLogado");
+  if (admLogado !== "true") {
     alert("Você precisa estar logado como administrador!");
     window.location.href = "login.html";
   }
@@ -26,9 +27,10 @@ const form = document.getElementById("form-login");
 if (form) {
   form.addEventListener("submit", (e) => {
     e.preventDefault();
-    const usuario = e.target.usuario.value;
-    const senha = e.target.senha.value;
+    const usuario = e.target.usuario.value.trim();
+    const senha = e.target.senha.value.trim();
 
+    // Simples validação de login estático (pode ser substituído por backend)
     if (usuario === "adm" && senha === "senha123") {
       localStorage.setItem("admLogado", "true");
       window.location.href = "dashboard.html";
@@ -44,14 +46,15 @@ if (form) {
 async function carregarAgendamentos() {
   try {
     const res = await fetch("/api/agendamentos");
-    const agendamentos = await res.json();
+    if (!res.ok) throw new Error("Erro na resposta da API");
 
+    const agendamentos = await res.json();
     const tbodyPendentes = document.querySelector("#tabela-pendentes tbody");
-    const tbodyConcluidos = document.querySelector("#tabela-concluidos tbody"); // pode não existir
+    const tbodyConcluidos = document.querySelector("#tabela-concluidos tbody");
     const concluidosList = document.getElementById("concluidos-list");
 
     if (tbodyPendentes) tbodyPendentes.innerHTML = "";
-    if (tbodyConcluidos) tbodyConcluidos.innerHTML = ""; // safe se existir
+    if (tbodyConcluidos) tbodyConcluidos.innerHTML = "";
 
     let total = 0, concluidos = 0, pendentes = 0;
     const idsConcluidos = [];
@@ -59,7 +62,6 @@ async function carregarAgendamentos() {
     agendamentos.forEach(a => {
       total++;
 
-      // Cria a linha da tabela (usamos sempre a estrutura; só inserimos em Pendentes)
       const tr = document.createElement("tr");
       tr.innerHTML = `
         <td>${a.id}</td>
@@ -78,7 +80,6 @@ async function carregarAgendamentos() {
       if (a.concluido) {
         concluidos++;
         idsConcluidos.push(a.id);
-        // Se houver uma tabela de concluídos no HTML, também joga lá (opcional)
         if (tbodyConcluidos) tbodyConcluidos.appendChild(tr);
       } else {
         pendentes++;
@@ -86,73 +87,56 @@ async function carregarAgendamentos() {
       }
 
       // ============================
-      // Botão concluir/reabrir
+      // Botões de ação por agendamento
       // ============================
-      const btnConcluir = tr.querySelector(".btn-concluir");
-      btnConcluir.addEventListener("click", () => {
-        if (a.concluido) {
-          if (confirm("Deseja reabrir este agendamento?")) {
-            atualizarConcluido(a.id, false);
-          }
-        } else {
-          if (confirm("Deseja marcar este agendamento como concluído?")) {
-            atualizarConcluido(a.id, true);
-          }
-        }
+      tr.querySelector(".btn-concluir").addEventListener("click", () => {
+        const confirmar = a.concluido
+          ? confirm("Deseja reabrir este agendamento?")
+          : confirm("Deseja marcar este agendamento como concluído?");
+        if (confirmar) atualizarConcluido(a.id, !a.concluido);
       });
 
-      // ============================
-      // Botão editar
-      // ============================
-      const btnEditar = tr.querySelector(".btn-editar");
-      btnEditar.addEventListener("click", () => editarAgendamento(a));
-
-      // ============================
-      // Botão excluir
-      // ============================
-      const btnExcluir = tr.querySelector(".btn-excluir");
-      btnExcluir.addEventListener("click", () => excluirAgendamento(a.id));
+      tr.querySelector(".btn-editar").addEventListener("click", () => editarAgendamento(a));
+      tr.querySelector(".btn-excluir").addEventListener("click", () => excluirAgendamento(a.id));
     });
 
-    // Atualizar cards de números
+    // Atualizar contadores
     const elTotal = document.getElementById("total-agendamentos");
     const elConcl = document.getElementById("agendamentos-concluidos");
     const elPend = document.getElementById("agendamentos-pendentes");
+
     if (elTotal) elTotal.textContent = total;
     if (elConcl) elConcl.textContent = concluidos;
     if (elPend) elPend.textContent = pendentes;
 
-    // Atualizar lista de IDs concluídos dentro do card
+    // Chips de concluídos
     if (concluidosList) {
-      if (idsConcluidos.length === 0) {
-        concluidosList.innerHTML = `<span class="placeholder">Nenhum</span>`;
-      } else {
-        concluidosList.innerHTML = idsConcluidos
-          .map(id => `<span class="chip" data-id="${id}">${id}</span>`)
-          .join("");
-      }
-    }
+      concluidosList.innerHTML = idsConcluidos.length
+        ? idsConcluidos.map(id => `<span class="chip" data-id="${id}">${id}</span>`).join("")
+        : `<span class="placeholder">Nenhum</span>`;
 
-    // Clique em chip para reabrir
-    if (concluidosList && !concluidosList.dataset.bound) {
-      concluidosList.addEventListener("click", (e) => {
-        const chip = e.target.closest(".chip");
-        if (!chip) return;
-        const id = Number(chip.dataset.id);
-        if (Number.isFinite(id) && confirm(`Reabrir agendamento #${id}?`)) {
-          atualizarConcluido(id, false);
-        }
-      });
-      concluidosList.dataset.bound = "1";
+      // Evita múltiplos binds no mesmo listener
+      if (!concluidosList.dataset.bound) {
+        concluidosList.addEventListener("click", (e) => {
+          const chip = e.target.closest(".chip");
+          if (!chip) return;
+          const id = Number(chip.dataset.id);
+          if (Number.isFinite(id) && confirm(`Reabrir agendamento #${id}?`)) {
+            atualizarConcluido(id, false);
+          }
+        });
+        concluidosList.dataset.bound = "1";
+      }
     }
 
   } catch (err) {
     console.error("Erro ao carregar agendamentos:", err);
+    alert("Erro ao carregar agendamentos. Tente novamente mais tarde.");
   }
 }
 
 // ============================
-// Atualizar concluído
+// Atualizar status "concluído"
 // ============================
 async function atualizarConcluido(id, valor) {
   try {
@@ -163,7 +147,8 @@ async function atualizarConcluido(id, valor) {
     });
     carregarAgendamentos();
   } catch (err) {
-    console.error(err);
+    console.error("Erro ao atualizar agendamento:", err);
+    alert("Erro ao atualizar agendamento.");
   }
 }
 
@@ -171,13 +156,15 @@ async function atualizarConcluido(id, valor) {
 // Excluir agendamento
 // ============================
 async function excluirAgendamento(id) {
-  if (confirm("Deseja realmente excluir este agendamento?")) {
-    try {
-      await fetch(`/api/agendamento/${id}`, { method: "DELETE" });
-      carregarAgendamentos();
-    } catch (err) {
-      console.error(err);
-    }
+  const confirmar = confirm("Deseja realmente excluir este agendamento?");
+  if (!confirmar) return;
+
+  try {
+    await fetch(`/api/agendamento/${id}`, { method: "DELETE" });
+    carregarAgendamentos();
+  } catch (err) {
+    console.error("Erro ao excluir agendamento:", err);
+    alert("Erro ao excluir agendamento.");
   }
 }
 
@@ -201,11 +188,15 @@ function editarAgendamento(ag) {
       data: novaData,
       hora: novaHora
     })
-  }).then(() => carregarAgendamentos());
+  }).then(() => carregarAgendamentos())
+    .catch((err) => {
+      console.error("Erro ao editar agendamento:", err);
+      alert("Erro ao editar agendamento.");
+    });
 }
 
 // ============================
-// Inicializar
+// Inicializar se estiver no dashboard
 // ============================
 if (window.location.pathname.includes("dashboard.html")) {
   carregarAgendamentos();
